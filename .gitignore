@@ -1,0 +1,10 @@
+# Binaires
+/tracker
+/cmd/tracker/tracker
+
+# Données locales
+data/
+
+# Divers
+.DS_Store
+*.log
