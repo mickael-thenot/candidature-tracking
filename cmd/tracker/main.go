@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"text/tabwriter"
 	"time"
 	"uuid"
 
@@ -111,11 +112,14 @@ func handleList(s store.Store) {
 		return
 	}
 
-	fmt.Printf("%-38s | %-20s | %-20s | %-10s\n", "ID", "Entreprise", "Poste", "Statut")
-	fmt.Println("-------------------------------------------------------------------------------------------------")
+	// Initialisation du writer
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
+	fmt.Fprintf(w, "ID\tENTREPRISE\tPOSTE\tSTATUT\n")
+
 	for _, c := range list {
-		fmt.Printf("%-38s | %-20s | %-20s | %-10s\n", c.ID, c.Company, c.Position, c.Status)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", c.ID, c.Company, c.Position, c.Status)
 	}
+	w.Flush()
 }
 
 // handleUpdate gère la sous-commande "update".

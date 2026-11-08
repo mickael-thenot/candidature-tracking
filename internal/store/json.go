@@ -1,10 +1,12 @@
 package store
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"uuid"
 
@@ -132,6 +134,16 @@ func (s *JSONStore) List() ([]model.Candidature, error) {
 	for _, c := range s.data {
 		res = append(res, c)
 	}
+
+	// Trier par date de candidature, de la plus récente à la plus ancienne.
+	// En cas d'égalité, on trie par ID (qui est ordonné dans le temps avec UUID v7).
+	slices.SortFunc(res, func(a, b model.Candidature) int {
+		if !a.AppliedAt.Equal(b.AppliedAt) {
+			return b.AppliedAt.Compare(a.AppliedAt) // b avant a = tri décroissant
+		}
+		return bytes.Compare(b.ID[:], a.ID[:])
+	})
+
 	return res, nil
 }
 
